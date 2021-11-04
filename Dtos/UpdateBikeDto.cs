@@ -1,17 +1,17 @@
 ﻿using BikeRental.Data.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BikeRental.Entities
+namespace BikeRental.Dtos
 {
-    public class Bike
+    public class UpdateBikeDto
     {
-        public int Id { get; set; }
+        [MinLength(4)]
         public string Name { get; set; }
         public BikeType Type { get; set; }
         public decimal Price { get; set; }
-        public BikeStatus Status { get; set; }
     }
 }
