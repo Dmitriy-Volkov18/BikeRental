@@ -1,4 +1,5 @@
 using BikeRental.Data;
+using BikeRental.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,6 +31,7 @@ namespace BikeRental
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(options => options.UseSqlServer(_config.GetConnectionString("DbConnection")));
+            services.AddScoped<IBikeRepository, BikeRepository>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
