@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BikeRental.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,11 @@ namespace BikeRental.Controllers
     [Route("[controller]")]
     public class BikeRentalController : ControllerBase
     {
+        private readonly DataContext _context;
 
-
-        public BikeRentalController()
+        public BikeRentalController(DataContext context)
         {
-            
+            _context = context;
         }
 
        
