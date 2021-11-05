@@ -1,6 +1,8 @@
-﻿using BikeRental.Dtos;
+﻿using BikeRental.Data.Enums;
+using BikeRental.Dtos;
 using BikeRental.Entities;
 using BikeRental.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,44 +12,98 @@ namespace BikeRental.Data
 {
     public class BikeRepository : IBikeRepository
     {
-        public Task<bool> AddBike(AddBikeDto addWeatherDto)
+        private readonly DataContext _context;
+
+        public BikeRepository(DataContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task<bool> DeleteBike(int id)
+        public async Task<bool> AddBike(AddBikeDto addBikeDto)
         {
-            throw new NotImplementedException();
+            var newBike = new Bike
+            {
+                Name = addBikeDto.Name,
+                Type = addBikeDto.Type,
+                Price = addBikeDto.Price,
+                Status = BikeStatus.Free
+            };
+
+            _context.Bikes.Add(newBike);
+
+            return await SaveAllAsync();
         }
 
-        public Task<ICollection<Bike>> GetAllBikes()
+        public async Task<bool> ChangeBikeStatus(int id)
         {
-            throw new NotImplementedException();
+            var bike = await _context.Bikes.SingleOrDefaultAsync(b => b.Id == id);
+
+            if (bike is null) return await Task.FromResult(false);
+
+            bike.Status = bike.Status == BikeStatus.Free ? BikeStatus.Rented : BikeStatus.Free;
+
+            return await SaveAllAsync();
         }
 
-        public Task<Bike> GetBikeById(int id)
+        public async Task<bool> DeleteBike(int id)
         {
-            throw new NotImplementedException();
+            var bike = await _context.Bikes.SingleOrDefaultAsync(b => b.Id == id);
+
+            if(bike is null) return await Task.FromResult(false);
+
+            _context.Bikes.Remove(bike);
+
+            return await SaveAllAsync();
         }
 
-        public Task<ICollection<Bike>> GetFreeBikes()
+        public async Task<IEnumerable<Bike>> GetAllBikes()
         {
-            throw new NotImplementedException();
+            return await _context.Bikes.ToListAsync();
         }
 
-        public Task<ICollection<Bike>> GetRentedBikes()
+        public async Task<Bike> GetBikeById(int id)
         {
-            throw new NotImplementedException();
+            var bike = await _context.Bikes.SingleOrDefaultAsync(b => b.Id == id);
+
+            if (bike is null) return null;
+
+            return bike;
         }
 
-        public Task<bool> SaveAllAsync()
+        public async Task<IEnumerable<Bike>> GetFreeBikes()
         {
-            throw new NotImplementedException();
+            var freeBikes = await _context.Bikes.Where(b => b.Status == BikeStatus.Free).ToListAsync();
+
+            if (freeBikes.Count == 0) return null;
+
+            return freeBikes;
         }
 
-        public Task<bool> UpdateBike(UpdateBikeDto updateWeatherDto)
+        public async Task<IEnumerable<Bike>> GetRentedBikes()
         {
-            throw new NotImplementedException();
+            var rentedBikes = await _context.Bikes.Where(b => b.Status == BikeStatus.Rented).ToListAsync();
+
+            if (rentedBikes.Count == 0) return null;
+
+            return rentedBikes;
+        }
+
+        public async Task<bool> SaveAllAsync()
+        {
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> UpdateBike(int id, UpdateBikeDto updateBikeDto)
+        {
+            var updateBike = await _context.Bikes.Where(b => b.Id == id).SingleOrDefaultAsync();
+
+            if (updateBike is null) return await Task.FromResult(false);
+
+            updateBike.Name = updateBikeDto.Name;
+            updateBike.Type = updateBikeDto.Type;
+            updateBike.Price = updateBikeDto.Price;
+
+            return await SaveAllAsync();
         }
     }
 }
