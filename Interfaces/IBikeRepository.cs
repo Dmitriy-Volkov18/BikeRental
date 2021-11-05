@@ -7,15 +7,16 @@ using System.Threading.Tasks;
 
 namespace BikeRental.Interfaces
 {
-    interface IBikeRepository
+    public interface IBikeRepository
     {
-        Task<bool> AddBike(AddBikeDto addWeatherDto);
-        Task<bool> UpdateBike(UpdateBikeDto updateWeatherDto);
+        Task<bool> AddBike(AddBikeDto addBikeDto);
+        Task<bool> UpdateBike(int id, UpdateBikeDto updateBikeDto);
         Task<bool> DeleteBike(int id);
-        Task<ICollection<Bike>> GetAllBikes();
-        Task<ICollection<Bike>> GetFreeBikes();
-        Task<ICollection<Bike>> GetRentedBikes();
+        Task<IEnumerable<Bike>> GetAllBikes();
+        Task<IEnumerable<Bike>> GetFreeBikes();
+        Task<IEnumerable<Bike>> GetRentedBikes();
         Task<Bike> GetBikeById(int id);
+        Task<bool> ChangeBikeStatus(int id);
         Task<bool> SaveAllAsync();
     }
 }
