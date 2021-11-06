@@ -11,11 +11,16 @@ import { tap } from "rxjs/operators";
 export class BikeService {
   baseUrl: string = environment.httpUrl;
   private _refreshedBikes$ = new Subject<void>();
+  private _refreshedUpdateBikes$ = new Subject<{ id: number, currentValues: Bike }>();
 
   constructor(private http: HttpClient) { }
 
   get refreshBikes() {
     return this._refreshedBikes$;
+  }
+
+  get refreshUpdateBikes() {
+    return this._refreshedUpdateBikes$;
   }
 
   getFreeBikes(): Observable<Bike[]> {
@@ -42,5 +47,9 @@ export class BikeService {
       tap(() => {
         this.refreshBikes.next();
       }));
+  }
+
+  updateBike(id: number, updatedValues: Bike): Observable<Bike> {
+    return this.http.put<Bike>(this.baseUrl + id, updatedValues);
   }
 }

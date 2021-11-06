@@ -38,7 +38,7 @@ export class RentedBikesComponent implements OnInit {
           bike.type = BikeType[bike.type] as unknown as BikeType;
         })
 
-        this.totalCost = this.getTotalPrice(this.bikes);
+        this.totalCost = parseFloat((Math.round(this.getTotalPrice(this.bikes) * 100) / 100).toFixed(2));
       }
     })
   }

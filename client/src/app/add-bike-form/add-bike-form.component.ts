@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { BikeService } from '../_services/bike.service';
 
@@ -7,7 +7,7 @@ import { BikeService } from '../_services/bike.service';
   templateUrl: './add-bike-form.component.html',
   styleUrls: ['./add-bike-form.component.css']
 })
-export class AddBikeFormComponent {
+export class AddBikeFormComponent implements OnInit {
   @ViewChild("addBikeForm") addBikeForm!: NgForm;
 
   bikeTypes = [
@@ -27,14 +27,45 @@ export class AddBikeFormComponent {
     Name: "Road"
   };
 
+  editMode: boolean = false;
+  editId: number = 0;
+
   constructor(private bikeService: BikeService) { }
 
+  ngOnInit(): void {
+    this.bikeService.refreshUpdateBikes.subscribe(response => {
+      this.editMode = true;
+      var key = "";
+
+      this.bikeTypes.forEach(type => {
+        key = type.key;
+        this.editId = response.id;
+      })
+      
+      this.addBikeForm.controls['name'].setValue(response.currentValues.name);
+      this.addBikeForm.controls['type'].setValue(key);
+      this.addBikeForm.controls['price'].setValue(response.currentValues.price);
+    })
+  }
+
   onSubmit() {
-    this.bikeService.addBike(this.addBikeForm.value).subscribe(_ => {
-      this.reset();
-    }, error => {
-      console.log(error);
-    });
+    if (this.editMode) {
+      this.bikeService.updateBike(this.editId, this.addBikeForm.value).subscribe(_ => {
+        this.bikeService.refreshBikes.next();
+        this.reset();
+        this.editMode = false;
+      }, error => {
+        console.log(error);
+      });
+    } else {
+      this.bikeService.addBike(this.addBikeForm.value).subscribe(_ => {
+        this.reset();
+        this.editMode = false;
+      }, error => {
+        console.log(error);
+      });
+    }
+
   }
 
   reset() {
