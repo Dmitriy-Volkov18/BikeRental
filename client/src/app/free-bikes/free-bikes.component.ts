@@ -18,6 +18,7 @@ export class FreeBikesComponent implements OnInit {
     this.bikeService.refreshBikes.subscribe(() => {
       this.getFreeBikes();
     })
+
     this.getFreeBikes();
   }
 
@@ -45,5 +46,9 @@ export class FreeBikesComponent implements OnInit {
 
   changeStatus(id: number) {
     this.bikeService.changeStatus(id).subscribe((_) => {  }, (error) => { console.log(error); })
+  }
+
+  updateBike(id: number, currentValues: Bike) {
+    this.bikeService.refreshUpdateBikes.next({ id, currentValues});
   }
 }
