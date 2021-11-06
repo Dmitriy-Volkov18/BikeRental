@@ -19,41 +19,47 @@ namespace BikeRental.Data
             _context = context;
         }
 
-        public async Task<bool> AddBike(AddBikeDto addBikeDto)
+        public async Task<Bike> AddBike(AddBikeDto addBikeDto)
         {
             var newBike = new Bike
             {
                 Name = addBikeDto.Name,
-                Type = addBikeDto.Type,
+                Type = (BikeType)addBikeDto.Type,
                 Price = addBikeDto.Price,
                 Status = BikeStatus.Free
             };
 
-            _context.Bikes.Add(newBike);
+            await _context.Bikes.AddAsync(newBike);
 
-            return await SaveAllAsync();
+            await SaveAllAsync();
+
+            return newBike;
         }
 
-        public async Task<bool> ChangeBikeStatus(int id)
+        public async Task<Bike> ChangeBikeStatus(int id)
         {
-            var bike = await _context.Bikes.SingleOrDefaultAsync(b => b.Id == id);
+            var bike = await _context.Bikes.FindAsync(id);
 
-            if (bike is null) return await Task.FromResult(false);
+            if (bike is null) return null;
 
             bike.Status = bike.Status == BikeStatus.Free ? BikeStatus.Rented : BikeStatus.Free;
 
-            return await SaveAllAsync();
+            await SaveAllAsync();
+
+            return bike;
         }
 
-        public async Task<bool> DeleteBike(int id)
+        public async Task<Bike> DeleteBike(int id)
         {
-            var bike = await _context.Bikes.SingleOrDefaultAsync(b => b.Id == id);
+            var bike = await _context.Bikes.FindAsync(id);
 
-            if(bike is null) return await Task.FromResult(false);
+            if (bike is null) return null;
 
             _context.Bikes.Remove(bike);
 
-            return await SaveAllAsync();
+            await SaveAllAsync();
+
+            return bike;
         }
 
         public async Task<IEnumerable<Bike>> GetAllBikes()
@@ -63,7 +69,7 @@ namespace BikeRental.Data
 
         public async Task<Bike> GetBikeById(int id)
         {
-            var bike = await _context.Bikes.SingleOrDefaultAsync(b => b.Id == id);
+            var bike = await _context.Bikes.FindAsync(id);
 
             if (bike is null) return null;
 
@@ -93,17 +99,19 @@ namespace BikeRental.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> UpdateBike(int id, UpdateBikeDto updateBikeDto)
+        public async Task<Bike> UpdateBike(int id, UpdateBikeDto updateBikeDto)
         {
             var updateBike = await _context.Bikes.Where(b => b.Id == id).SingleOrDefaultAsync();
 
-            if (updateBike is null) return await Task.FromResult(false);
+            if (updateBike is null) return null;
 
             updateBike.Name = updateBikeDto.Name;
-            updateBike.Type = updateBikeDto.Type;
+            updateBike.Type = (BikeType)updateBikeDto.Type;
             updateBike.Price = updateBikeDto.Price;
 
-            return await SaveAllAsync();
+            await SaveAllAsync();
+
+            return updateBike;
         }
     }
 }

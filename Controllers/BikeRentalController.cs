@@ -15,21 +15,19 @@ namespace BikeRental.Controllers
     [Route("[controller]")]
     public class BikeRentalController : ControllerBase
     {
-        private readonly DataContext _context;
         private readonly IBikeRepository _bikeRepository;
 
-        public BikeRentalController(DataContext context, IBikeRepository bikeRepository)
+        public BikeRentalController(IBikeRepository bikeRepository)
         {
-            _context = context;
             _bikeRepository = bikeRepository;
         }
 
        [HttpPost]
-       public async Task<ActionResult> AddBike(AddBikeDto addBikeDto)
+       public async Task<ActionResult<Bike>> AddBike(AddBikeDto addBikeDto)
         {
-            var result = await _bikeRepository.AddBike(addBikeDto);
+            var bike = await _bikeRepository.AddBike(addBikeDto);
 
-            if (result) return Created("msg", "New bike has been created successfully");
+            if (bike != null) return Ok(bike);
 
             return BadRequest("Something went wrong");
         }
@@ -39,8 +37,6 @@ namespace BikeRental.Controllers
         {
             var bikes = await _bikeRepository.GetAllBikes();
 
-            if (bikes is null) return NotFound("There are no any bikes");
-
             return Ok(bikes);
         }
 
@@ -48,8 +44,6 @@ namespace BikeRental.Controllers
         public async Task<ActionResult<IEnumerable<Bike>>> GellFreeBikes()
         {
             var freeBikes = await _bikeRepository.GetFreeBikes();
-
-            if (freeBikes is null) return NotFound("There are no free bikes");
 
             return Ok(freeBikes);
         }
@@ -59,13 +53,11 @@ namespace BikeRental.Controllers
         {
             var rentedBikes = await _bikeRepository.GetRentedBikes();
 
-            if (rentedBikes is null) return NotFound("There are no rented bikes");
-
             return Ok(rentedBikes);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetBikeById(int id)
+        public async Task<ActionResult<Bike>> GetBikeById(int id)
         {
             var bike = await _bikeRepository.GetBikeById(id);
 
@@ -75,31 +67,31 @@ namespace BikeRental.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateBike(int id, UpdateBikeDto updateBikeDto)
+        public async Task<ActionResult<Bike>> UpdateBike(int id, UpdateBikeDto updateBikeDto)
         {
-            var result = await _bikeRepository.UpdateBike(id, updateBikeDto);
+            var bike = await _bikeRepository.UpdateBike(id, updateBikeDto);
 
-            if (result) return Ok("The bike has been updated successfully");
+            if (bike != null) return Ok(bike);
 
             return BadRequest("Something went wrong");
         }
 
         [HttpPut("change-bike-status/{id}")]
-        public async Task<ActionResult> UpdateBike(int id)
+        public async Task<ActionResult<Bike>> ChangeBikeStatus(int id)
         {
-            var result = await _bikeRepository.ChangeBikeStatus(id);
+            var bike = await _bikeRepository.ChangeBikeStatus(id);
 
-            if (result) return Ok("The bike status has been changed successfully");
+            if (bike != null) return Ok(bike);
 
             return BadRequest("Something went wrong");
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteBike(int id)
+        public async Task<ActionResult<Bike>> DeleteBike(int id)
         {
-            var result = await _bikeRepository.DeleteBike(id);
+            var bike = await _bikeRepository.DeleteBike(id);
 
-            if (result) return Ok("The bike has been deleted successfully");
+            if (bike != null) return Ok(bike);
 
             return BadRequest("Something went wrong");
         }

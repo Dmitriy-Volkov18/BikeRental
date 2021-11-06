@@ -1,0 +1,45 @@
+<div class="d-flex justify-content-center mb-5">
+  <div class="d-flex flex-column justify-content-start w-50">
+    <div class="mb-3">
+      <h4>Create new rent</h4>
+    </div>
+
+    <form class="px-4 py-4 bg-light d-flex justify-content-between align-items-end border" (ngSubmit)="onSubmit()" #addBikeForm="ngForm">
+      <div>
+        <label for="bike-name" class="form-label">Bike name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="bike-name"
+          placeholder="Name"
+          ngModel
+          name="name"
+          required
+        />
+      </div>
+      <div>
+        <label for="bike-type" class="form-label">Bike type</label>
+        <select class="form-select" id="bike-type" [(ngModel)]="selectedElement.key" name="type" required>
+          <option *ngFor="let type of bikeTypes" [ngValue]="type.key">{{type.value}}</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="bike-price" class="form-label">Bike price</label>
+        <input
+          type="number"
+          class="form-control"
+          id="bike-price"
+          placeholder="Price"
+          ngModel
+          name="price"
+          required
+        />
+      </div>
+
+      <div>
+        <input type="submit" class="btn btn-success" value="Submit sent" [disabled]="!addBikeForm.valid" />
+      </div>
+    </form>
+  </div>
+</div>
