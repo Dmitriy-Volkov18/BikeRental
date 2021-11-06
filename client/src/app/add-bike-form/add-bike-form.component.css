@@ -1,3 +1,3 @@
-.form_block {
-  background-color: #c2c2c2;
+input.ng-invalid.ng-touched, select.ng-invalid.ng-touched{
+    border: 1px solid red;
 }

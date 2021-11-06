@@ -1,18 +1,17 @@
 <div class="d-flex justify-content-center">
   <div class="d-flex flex-column justify-content-start w-50">
     <div class="mb-3">
-      <h4>Available bicycles(3)</h4>
+      <h4>Available bicycles({{freeBikesCount}})</h4>
     </div>
 
-    <div class="d-flex align-items-center justify-content-between bg-light border px-4 py-3">
+    <div class="d-flex align-items-center justify-content-between bg-light border px-4 py-3 my-2" *ngFor="let freeBike of bikes">
       <div>
-        <p>Superfast bicycle / Custom / $12.44</p>
+        <p>{{freeBike.name}} / {{freeBike.type}} / ${{freeBike.price}}</p>
       </div>
 
       <div>
-        <button class="btn btn-primary mx-2">Rent</button>
-        <button class="btn btn-warning mx-2">Update</button>
-        <button class="btn btn-danger ms-2">Delete</button>
+        <button class="btn btn-primary mx-2" (click)="changeStatus(freeBike.id)">Rent</button>
+        <button class="btn btn-danger ms-2" (click)="deleteBike(freeBike.id)">Delete</button>
       </div>
     </div>
   </div>

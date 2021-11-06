@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
+import { Bike } from './_models/Bike';
 
 @Component({
   selector: 'app-root',
@@ -8,23 +8,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
- 
-  title = 'Bike Rental';
-
-  bikes: any;
-
-  constructor(private http: HttpClient) {}
+  
+  constructor() {}
 
   ngOnInit(): void {
-    this.getBikes();
   }
 
-  getBikes() {
-    this.http.get("https://localhost:5001/bikerental/all-bikes").subscribe(response => {
-      this.bikes = response;
-      console.log(this.bikes);
-    }, error => {
-      console.log(error);
-    })
-  }
 }

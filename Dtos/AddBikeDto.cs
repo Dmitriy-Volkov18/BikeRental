@@ -13,7 +13,7 @@ namespace BikeRental.Dtos
         [MinLength(4)]
         public string Name { get; set; }
         [Required]
-        public BikeType Type { get; set; }
+        public int Type { get; set; }
         [Required]
         public decimal Price { get; set; }
     }

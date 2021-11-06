@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="client\src\app\_enums\bikeStatus.ts" />
+    <None Remove="client\src\app\_enums\bikeTypes.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.11">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -14,7 +19,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="client\src\_services\" />
+    <Folder Include="client\src\app\_services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="client\src\app\_enums\bikeStatus.ts" />
+    <TypeScriptCompile Include="client\src\app\_enums\bikeTypes.ts" />
   </ItemGroup>
 
 </Project>
